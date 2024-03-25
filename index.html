@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑 게임</title>
+</head>
+<body>
+    <h1>쇼핑 게임</h1>
+    <p>보유 포인트: <span id="pointA">25</span></p>
+    <p>구매 포인트: <span id="pointB">0</span></p>
+    <p>보유 물건: <span id="itemCount">15</span></p>
+    <p>현재 물건: <span id="currentItem"></span></p>
+    <button onclick="buyItem()">물건 구매하기</button>
+    <button onclick="skipItem()">물건 넘기기</button>
+
+    <script>
+        let a = 25; // 보유 포인트
+        let b = 0;  // 구매 포인트
+        let d = 15; // 보유 물건 개수
+
+        const items = {
+            5: 1,
+            4: [2, 3],
+            3: [4, 5, 6],
+            2: [7, 8, 9, 10],
+            1: [11, 12, 13, 14, 15]
+        };
+
+        let currentItemValue = null;
+
+        function getRandomItem() {
+            const randomValue = Math.floor(Math.random() * 15) + 1;
+            let count = 0;
+            for (let value in items) {
+                if (Array.isArray(items[value])) {
+                    count += items[value].length;
+                } else {
+                    count += items[value];
+                }
+                if (randomValue <= count) {
+                    return value;
+                }
+            }
+        }
+
+        function displayCurrentItem() {
+            currentItemValue = getRandomItem();
+            document.getElementById("currentItem").innerText = currentItemValue;
+        }
+
+        function buyItem() {
+            if (currentItemValue && a >= currentItemValue && d > 0) {
+                a -= currentItemValue;
+                b += 1;
+                d -= 1;
+                
+                document.getElementById("pointA").innerText = a;
+                document.getElementById("pointB").innerText = b;
+                document.getElementById("itemCount").innerText = d;
+                
+                if (d === 0) {
+                    alert(`획득한 포인트: ${b}`);
+                    endGame();
+                } else {
+                    displayCurrentItem();
+                }
+            } else {
+                alert("보유 포인트가 부족하거나 더 이상 물건이 없습니다.");
+            }
+        }
+
+        function skipItem() {
+            if (d > 0) {
+                d -= 1;
+                document.getElementById("itemCount").innerText = d;
+
+                if (d === 0) {
+                    alert(`획득한 포인트: ${b}`);
+                    endGame();
+                } else {
+                    displayCurrentItem();
+                }
+            } else {
+                alert("더 이상 물건이 없습니다.");
+            }
+        }
+
+        function endGame() {
+            // 게임 종료 처리 (예: 페이지 리로드)
+            location.reload();
+        }
+
+        // 게임 시작 시 첫 번째 물건 보여주기
+        displayCurrentItem();
+    </script>
+</body>
+</html>
